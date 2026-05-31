@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SFX SPACE — Journal Trading Premium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0c; --panel:rgba(20,20,24,0.72); --panel-solid:#15151a;
+    --line:rgba(87,200,182,0.18); --line-soft:rgba(255,255,255,0.07);
+    --gold:#57c8b6; --gold-bright:#a9e8da; --gold-deep:#2c7a6c;
+    --txt:#f4f1ea; --txt-dim:#a39f95; --txt-faint:#6e6a62;
+    --win:#5fce9b; --loss:#e3766f; --be:#c9a86a;
+    --radius:18px; --shadow:0 30px 80px -20px rgba(0,0,0,0.8);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  #bgLayer{position:fixed;inset:0;z-index:-2;background-size:cover;background-position:center;background-image:linear-gradient(180deg,rgba(8,8,10,0.4),rgba(8,8,10,0.78)),url('1000031100.jpg')}
+  #bgScrim{position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(8,8,10,0.55),rgba(8,8,10,0.82))}
+  .grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+  .brand{font-family:'Fraunces',serif;letter-spacing:.5px}
+  .gold{color:var(--gold)}
+  button{font-family:'Outfit',sans-serif;cursor:pointer;border:none;background:none;color:inherit}
+  input,select,textarea{font-family:'Outfit',sans-serif}
+  .hidden{display:none !important}
+
+  .btn{background:linear-gradient(135deg,var(--gold-bright) 0%,var(--gold) 55%,var(--gold-deep) 130%);color:#05231f;font-weight:600;padding:13px 22px;border-radius:12px;letter-spacing:.3px;transition:transform .15s ease,box-shadow .25s ease,filter .2s;box-shadow:0 10px 30px -10px rgba(87,200,182,.55),inset 0 1px 0 rgba(255,255,255,.4),inset 0 -1px 0 rgba(0,0,0,.15)}
+  .btn:hover{transform:translateY(-2px);filter:brightness(1.07) saturate(1.05);box-shadow:0 16px 38px -12px rgba(87,200,182,.7),inset 0 1px 0 rgba(255,255,255,.5)}
+  .btn:active{transform:translateY(0) scale(.98)}
+  .btn-ghost{background:rgba(87,200,182,.05);border:1px solid var(--line);color:var(--txt);padding:11px 18px;border-radius:11px;font-weight:500;transition:all .2s;backdrop-filter:blur(6px)}
+  .btn-ghost:hover{border-color:var(--gold);background:rgba(87,200,182,.12);box-shadow:0 0 22px -8px rgba(87,200,182,.5)}
+  .btn-ghost:active{transform:scale(.97)}
+
+  /* AUTH */
+  #auth{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+  .auth-card{width:100%;max-width:430px;background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:42px 38px;box-shadow:var(--shadow);backdrop-filter:blur(22px);animation:rise .8s cubic-bezier(.2,.8,.2,1)}
+  @keyframes rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+  .logo-mark{width:56px;height:56px;border-radius:15px;margin:0 auto 18px;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold-bright),var(--gold-deep));color:#05231f;font-family:'Fraunces',serif;font-size:26px;font-weight:600;box-shadow:0 10px 30px -8px rgba(87,200,182,.6);letter-spacing:0}
+  .auth-card h1{font-family:'Fraunces',serif;font-weight:500;font-size:30px;text-align:center;letter-spacing:1px}
+  .auth-card .sub{text-align:center;color:var(--txt-dim);font-size:14px;margin-top:7px;margin-bottom:28px;font-weight:300}
+  .tabs{display:flex;background:rgba(255,255,255,.04);border-radius:12px;padding:5px;margin-bottom:24px}
+  .tabs button{flex:1;padding:10px;border-radius:9px;color:var(--txt-dim);font-weight:500;font-size:14px;transition:all .25s}
+  .tabs button.active{background:linear-gradient(135deg,var(--gold-bright),var(--gold));color:#05231f;box-shadow:0 6px 16px -6px rgba(87,200,182,.5)}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:12px;color:var(--txt-dim);margin-bottom:7px;letter-spacing:.4px;text-transform:uppercase;font-weight:500}
+  .field input,.field select,.field textarea{width:100%;background:rgba(255,255,255,.03);border:1px solid var(--line-soft);border-radius:11px;padding:13px 15px;color:var(--txt);font-size:15px;transition:all .2s}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--gold);background:rgba(87,200,182,.05);box-shadow:0 0 0 3px rgba(87,200,182,.12)}
+  .auth-card .btn{width:100%;margin-top:8px;padding:15px}
+  .msg{font-size:13px;text-align:center;margin-top:16px;min-height:18px}
+  .msg.err{color:var(--loss)}.msg.ok{color:var(--win)}
+  .footnote{text-align:center;color:var(--txt-faint);font-size:11.5px;margin-top:22px;line-height:1.6;font-weight:300}
+
+  /* APP */
+  #app{max-width:1180px;margin:0 auto;padding:26px 22px 80px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 22px;backdrop-filter:blur(18px);box-shadow:var(--shadow);margin-bottom:22px}
+  .topbar .left{display:flex;align-items:center;gap:14px}
+  .logo-sm{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold-bright),var(--gold-deep));color:#05231f;font-family:'Fraunces',serif;font-size:22px;font-weight:600}
+  .topbar .title{font-family:'Fraunces',serif;font-size:22px;line-height:1.15}
+  .topbar .title small{display:block;font-family:'Outfit',sans-serif;font-size:12px;color:var(--txt-dim);font-weight:300;letter-spacing:.3px}
+  .topbar .right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .user-chip{display:flex;align-items:center;gap:9px;padding:8px 14px;border-radius:11px;background:rgba(255,255,255,.04);border:1px solid var(--line-soft);font-size:14px}
+  .user-chip .dot{width:8px;height:8px;border-radius:50%;background:var(--win);box-shadow:0 0 8px var(--win)}
+
+  /* balance panel */
+  .balance{display:flex;gap:14px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 22px;backdrop-filter:blur(14px);margin-bottom:18px;align-items:center}
+  .balance .bcol{flex:1;min-width:150px}
+  .balance .bcol span{display:block;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--txt-dim);margin-bottom:6px;font-weight:500}
+  .balance .bcol b{font-family:'Fraunces',serif;font-size:24px;font-weight:500}
+  .balance .bcol b.pos{color:var(--win)}.balance .bcol b.neg{color:var(--loss)}
+  .balance input{width:100%;max-width:180px;background:rgba(255,255,255,.04);border:1px solid var(--line-soft);border-radius:10px;padding:9px 12px;color:var(--txt);font-size:18px;font-family:'Fraunces',serif}
+  .balance input:focus{outline:none;border-color:var(--gold)}
+
+  /* stats */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px}
+  .stat{background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--radius);padding:18px;backdrop-filter:blur(14px);position:relative;overflow:hidden;animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+  .stat::after{content:"";position:absolute;top:0;right:0;width:70px;height:70px;background:radial-gradient(circle at top right,rgba(87,200,182,.18),transparent 70%)}
+  .stat .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--txt-dim);font-weight:500}
+  .stat .val{font-family:'Fraunces',serif;font-size:28px;margin-top:8px;font-weight:500}
+  .stat .val.pos{color:var(--win)}.stat .val.neg{color:var(--loss)}
+
+  /* chart */
+  .chart-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;backdrop-filter:blur(14px);margin-bottom:26px}
+  .chart-card .ch-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+  .chart-card h3{font-family:'Fraunces',serif;font-weight:500;font-size:19px}
+  .chart-card .ch-now{font-size:13px;color:var(--txt-dim)}
+  #chartWrap svg{width:100%;height:auto;display:block}
+  .chart-empty{text-align:center;color:var(--txt-faint);padding:40px 10px;font-weight:300}
+
+  .section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:14px;flex-wrap:wrap}
+  .section-head h2{font-family:'Fraunces',serif;font-weight:500;font-size:23px}
+  .filters{display:flex;gap:8px;flex-wrap:wrap}
+  .filters select{background:rgba(255,255,255,.04);border:1px solid var(--line-soft);border-radius:10px;padding:9px 13px;color:var(--txt);font-size:13px}
+
+  /* journal list */
+  .journal-list{display:flex;flex-direction:column;gap:14px}
+  .entry{background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--radius);padding:18px 20px;backdrop-filter:blur(14px);transition:border-color .25s,transform .2s;animation:rise .5s ease both}
+  .entry:hover{border-color:var(--line);transform:translateX(3px)}
+  .entry .row1{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .pair{font-family:'Fraunces',serif;font-size:20px;letter-spacing:.5px}
+  .badge{font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase}
+  .badge.buy{background:rgba(95,206,155,.14);color:var(--win);border:1px solid rgba(95,206,155,.3)}
+  .badge.sell{background:rgba(227,118,111,.14);color:var(--loss);border:1px solid rgba(227,118,111,.3)}
+  .badge.win{background:rgba(95,206,155,.14);color:var(--win)}
+  .badge.loss{background:rgba(227,118,111,.14);color:var(--loss)}
+  .badge.be{background:rgba(201,168,106,.14);color:var(--be)}
+  .entry .date{color:var(--txt-faint);font-size:13px;font-weight:300}
+  .entry .pnl{margin-left:auto;font-family:'Fraunces',serif;font-size:22px;font-weight:500}
+  .entry .pnl.pos{color:var(--win)}.entry .pnl.neg{color:var(--loss)}
+  .entry .meta{display:flex;gap:22px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--line-soft)}
+  .entry .meta .m{font-size:13px}
+  .entry .meta .m span{display:block;color:var(--txt-faint);font-size:11px;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+  .entry .strat{display:inline-block;margin-top:12px;font-size:12px;color:var(--gold);background:rgba(87,200,182,.08);padding:5px 12px;border-radius:8px;border:1px solid var(--line)}
+  .entry .notes{margin-top:14px;font-size:14px;color:var(--txt-dim);line-height:1.65;font-weight:300;white-space:pre-wrap}
+  .entry .charts{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap}
+  .entry .charts .ct{flex:1;min-width:140px;max-width:260px}
+  .entry .charts .ct span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--txt-faint);margin-bottom:6px}
+  .entry .charts .ct img{width:100%;border-radius:10px;border:1px solid var(--line-soft);cursor:zoom-in;transition:border-color .2s}
+  .entry .charts .ct img:hover{border-color:var(--gold)}
+  .entry .del{margin-top:14px;font-size:12.5px;color:var(--txt-faint);transition:color .2s}
+  .entry .del:hover{color:var(--loss)}
+  .empty{text-align:center;padding:70px 20px;color:var(--txt-faint)}
+  .empty .big{font-family:'Fraunces',serif;font-size:24px;color:var(--txt-dim);margin-bottom:8px}
+
+  /* modal */
+  .overlay{position:fixed;inset:0;background:rgba(5,5,7,.7);backdrop-filter:blur(6px);z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:30px 18px;overflow-y:auto;animation:fade .3s}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal{width:100%;max-width:620px;background:var(--panel-solid);border:1px solid var(--line);border-radius:24px;padding:30px;box-shadow:var(--shadow);animation:rise .4s cubic-bezier(.2,.8,.2,1)}
+  .modal h3{font-family:'Fraunces',serif;font-weight:500;font-size:24px;margin-bottom:22px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .modal-actions{display:flex;gap:12px;margin-top:24px}
+  .modal-actions .btn{flex:1}
+  textarea{resize:vertical;min-height:80px;line-height:1.5}
+  .upload-box{border:1px dashed var(--line);border-radius:11px;padding:10px;display:flex;align-items:center;gap:12px}
+  .upload-box .pick{font-size:13px;color:var(--gold)}
+  .img-prev{margin-top:10px}
+  .img-prev img{max-height:90px;border-radius:8px;border:1px solid var(--line-soft)}
+
+  /* lightbox */
+  #lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:200;display:flex;align-items:center;justify-content:center;padding:24px;cursor:zoom-out;animation:fade .25s}
+  #lightbox img{max-width:100%;max-height:92vh;border-radius:12px;box-shadow:var(--shadow)}
+
+  #toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--panel-solid);border:1px solid var(--gold);color:var(--txt);padding:14px 26px;border-radius:14px;z-index:100;transition:transform .4s cubic-bezier(.2,.8,.2,1);box-shadow:var(--shadow);font-size:14px}
+  #toast.show{transform:translateX(-50%) translateY(0)}
+
+  @media(max-width:760px){.grid2{grid-template-columns:1fr}.topbar .title{font-size:19px}}
+</style>
+</head>
+<body>
+  <div id="bgLayer"></div>
+  <div id="bgScrim"></div>
+  <div class="grain"></div>
+
+  <!-- ============ AUTH ============ -->
+  <section id="auth">
+    <div class="auth-card">
+      <div class="logo-mark brand">SFX</div>
+      <h1 class="brand">SFX <span class="gold">SPACE</span></h1>
+      <p class="sub">Journal trading pribadi — tersimpan & terlindungi</p>
+
+      <div class="tabs">
+        <button id="tabLogin" class="active" onclick="switchTab('login')">Masuk</button>
+        <button id="tabReg" onclick="switchTab('reg')">Daftar</button>
+      </div>
+
+      <div class="field hidden" id="nameField">
+        <label>Nama Anda</label>
+        <input id="auName" type="text" placeholder="contoh: Budi Santoso" />
+      </div>
+      <div class="field">
+        <label>Username</label>
+        <input id="auUser" type="text" autocomplete="username" placeholder="username Anda" />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input id="auPass" type="password" autocomplete="current-password" placeholder="••••••••" />
+      </div>
+      <div class="field hidden" id="confirmField">
+        <label>Konfirmasi Password</label>
+        <input id="auPass2" type="password" placeholder="••••••••" />
+      </div>
+
+      <button class="btn" id="authBtn" onclick="doAuth()">Masuk</button>
+      <div class="msg" id="authMsg"></div>
+      <p class="footnote">Data tersimpan di perangkat & browser ini. Gunakan browser yang sama untuk melihat kembali journal Anda.</p>
+    </div>
+  </section>
+
+  <!-- ============ APP ============ -->
+  <section id="app" class="hidden">
+    <div class="topbar">
+      <div class="left">
+        <div class="logo-sm brand" id="logoSm">S</div>
+        <div class="title brand" id="memberName">Member<small id="dateNow"></small></div>
+      </div>
+      <div class="right">
+        <div class="user-chip"><span class="dot"></span><span id="whoami"></span></div>
+        <button class="btn-ghost" onclick="logout()">Keluar</button>
+      </div>
+    </div>
+
+    <!-- modal / saldo -->
+    <div class="balance">
+      <div class="bcol"><span>Modal Awal (opsional)</span><input id="modalInput" type="number" step="any" placeholder="0" onchange="saveModal(this.value)" /></div>
+      <div class="bcol"><span>Saldo Sekarang</span><b id="balNow">0</b></div>
+      <div class="bcol"><span>Return (ROI)</span><b id="roi">—</b></div>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <!-- equity chart -->
+    <div class="chart-card">
+      <div class="ch-head">
+        <h3>Performa <span class="gold">Equity</span></h3>
+        <div class="ch-now" id="chNow"></div>
+      </div>
+      <div id="chartWrap"></div>
+    </div>
+
+    <div class="section-head">
+      <h2>Riwayat <span class="gold">Journal</span></h2>
+      <div class="filters">
+        <select id="fResult" onchange="render()">
+          <option value="all">Semua Hasil</option>
+          <option value="win">Win</option>
+          <option value="loss">Loss</option>
+          <option value="be">BE</option>
+        </select>
+        <select id="fSort" onchange="render()">
+          <option value="new">Terbaru</option>
+          <option value="old">Terlama</option>
+          <option value="pnl">P&L Tertinggi</option>
+        </select>
+        <button class="btn" onclick="openModal()">+ Tambah Journal</button>
+      </div>
+    </div>
+
+    <div class="journal-list" id="list"></div>
+  </section>
+
+  <!-- ============ MODAL FORM ============ -->
+  <div class="overlay hidden" id="overlay">
+    <div class="modal">
+      <h3>Tambah <span class="gold">Journal Trade</span></h3>
+      <div class="grid2">
+        <div class="field"><label>Tanggal</label><input id="jDate" type="date" /></div>
+        <div class="field"><label>Pair / Instrumen</label><input id="jPair" type="text" placeholder="contoh: XAU/USD" /></div>
+        <div class="field"><label>Arah</label><select id="jDir"><option value="buy">Buy / Long</option><option value="sell">Sell / Short</option></select></div>
+        <div class="field"><label>Hasil</label><select id="jResult"><option value="win">Win</option><option value="loss">Loss</option><option value="be">Break Even</option></select></div>
+        <div class="field"><label>Harga Entry</label><input id="jEntry" type="text" placeholder="0.00" /></div>
+        <div class="field"><label>Harga Exit</label><input id="jExit" type="text" placeholder="0.00" /></div>
+        <div class="field"><label>Lot / Size</label><input id="jLot" type="text" placeholder="0.10" /></div>
+        <div class="field"><label>Profit / Loss (P&L)</label><input id="jPnl" type="number" step="any" placeholder="contoh: 120 atau -45" /></div>
+      </div>
+      <div class="field"><label>Strategi / Setup</label><input id="jStrat" type="text" placeholder="contoh: Breakout, Supply Demand, Scalping" /></div>
+      <div class="field"><label>Catatan & Refleksi</label><textarea id="jNotes" placeholder="Apa yang berjalan baik? Apa yang bisa diperbaiki?"></textarea></div>
+      <div class="grid2">
+        <div class="field">
+          <label>Chart Before (opsional)</label>
+          <div class="upload-box"><span class="pick">📎 Pilih gambar</span><input id="jBefore" type="file" accept="image/*" onchange="pickImg(event,'before')" /></div>
+          <div class="img-prev" id="prevBefore"></div>
+        </div>
+        <div class="field">
+          <label>Chart After (opsional)</label>
+          <div class="upload-box"><span class="pick">📎 Pilih gambar</span><input id="jAfter" type="file" accept="image/*" onchange="pickImg(event,'after')" /></div>
+          <div class="img-prev" id="prevAfter"></div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" onclick="saveEntry()">💾 Simpan Journal</button>
+        <button class="btn-ghost" onclick="closeModal()">Batal</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="lightbox" class="hidden" onclick="this.classList.add('hidden')"><img id="lightImg" src="" /></div>
+  <div id="toast"></div>
+
+<script>
+/* ============================================================
+   Background diatur lewat file 1000031100.jpg di repo (lihat CSS #bgLayer).
+   Suara klik memakai file click.mp3 di repo.
+   ============================================================ */
+
+/* ---------- STORAGE (localStorage + fallback memori) ---------- */
+const _mem={};
+const Store={
+  get(k){try{return localStorage.getItem(k);}catch(e){return (k in _mem)?_mem[k]:null;}},
+  set(k,v){try{localStorage.setItem(k,v);return true;}catch(e){try{_mem[k]=v;return true;}catch(_){return false;}}},
+  remove(k){try{localStorage.removeItem(k);}catch(e){delete _mem[k];}}
+};
+
+/* ---------- SUARA ---------- */
+let actx;
+function audio(){if(!actx){try{actx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}return actx;}
+/* Klik tombol memakai file click.mp3 yang Anda unggah ke repo */
+function click(){try{const a=new Audio('click.mp3');a.volume=0.65;a.play().catch(()=>{});}catch(e){}}
+function chime(){const a=audio();if(!a)return;[660,880,1180].forEach((f,i)=>{const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.value=f;const t=a.currentTime+i*0.07;g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.14,t+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+0.25);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+0.3);});}
+document.addEventListener('click',e=>{if(e.target.closest('button')||e.target.closest('.pick'))click();},true);
+
+/* ---------- HASH ---------- */
+async function hash(str){try{const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('sfx$'+str));return[...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');}catch(e){let h=0;for(let i=0;i<str.length;i++){h=(h<<5)-h+str.charCodeAt(i);h|=0;}return 'f'+h;}}
+
+/* ---------- RESIZE IMAGE (untuk chart Before/After) ---------- */
+function resizeImg(file,maxW,q){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height;if(w>maxW){h=h*maxW/w;w=maxW;}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',q));};img.src=r.result;};r.readAsDataURL(file);});}
+
+/* ---------- AUTH ---------- */
+let mode='login',currentUser=null;
+function users(){try{return JSON.parse(Store.get('sfx_users')||'{}');}catch(e){return{};}}
+function saveUsers(u){Store.set('sfx_users',JSON.stringify(u));}
+function switchTab(m){mode=m;document.getElementById('tabLogin').classList.toggle('active',m==='login');document.getElementById('tabReg').classList.toggle('active',m==='reg');document.getElementById('confirmField').classList.toggle('hidden',m!=='reg');document.getElementById('nameField').classList.toggle('hidden',m!=='reg');document.getElementById('authBtn').textContent=m==='login'?'Masuk':'Buat Akun';document.getElementById('authMsg').textContent='';}
+function showMsg(t,ok){const m=document.getElementById('authMsg');m.textContent=t;m.className='msg '+(ok?'ok':'err');}
+async function doAuth(){
+  const u=document.getElementById('auUser').value.trim().toLowerCase();
+  const p=document.getElementById('auPass').value;
+  if(!u||!p)return showMsg('Username dan password wajib diisi.');
+  if(u.length<3)return showMsg('Username minimal 3 karakter.');
+  const db=users();
+  if(mode==='reg'){
+    const name=document.getElementById('auName').value.trim();
+    const p2=document.getElementById('auPass2').value;
+    if(!name)return showMsg('Nama wajib diisi.');
+    if(p.length<4)return showMsg('Password minimal 4 karakter.');
+    if(p!==p2)return showMsg('Konfirmasi password tidak cocok.');
+    if(db[u])return showMsg('Username sudah terdaftar. Silakan masuk.');
+    db[u]={pass:await hash(p),name:name,created:Date.now()};saveUsers(db);
+    showMsg('Akun berhasil dibuat! Mengarahkan...',true);chime();setTimeout(()=>enter(u),700);
+  }else{
+    if(!db[u])return showMsg('Username tidak ditemukan.');
+    if(db[u].pass!==await hash(p))return showMsg('Password salah.');
+    chime();enter(u);
+  }
+}
+function enter(u){
+  currentUser=u;Store.set('sfx_session',u);
+  const rec=users()[u]||{};const name=rec.name||('@'+u);
+  document.getElementById('auth').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  document.getElementById('memberName').childNodes[0].nodeValue=name;
+  document.getElementById('logoSm').textContent=(name.trim()[0]||'S').toUpperCase();
+  document.getElementById('whoami').textContent='@'+u;
+  document.getElementById('dateNow').textContent=new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('modalInput').value=getModal()||'';
+  render();
+}
+function logout(){Store.remove('sfx_session');currentUser=null;document.getElementById('app').classList.add('hidden');document.getElementById('auth').classList.remove('hidden');document.getElementById('auUser').value='';document.getElementById('auPass').value='';}
+
+/* ---------- MODAL / SALDO ---------- */
+function getModal(){return parseFloat(Store.get('sfx_modal_'+currentUser))||0;}
+function saveModal(v){Store.set('sfx_modal_'+currentUser,String(parseFloat(v)||0));render();toast('Modal disimpan ✓');}
+
+/* ---------- JOURNAL DATA ---------- */
+function key(){return 'sfx_journal_'+currentUser;}
+function getEntries(){try{return JSON.parse(Store.get(key())||'[]');}catch(e){return[];}}
+function setEntries(a){return Store.set(key(),JSON.stringify(a));}
+
+let tmpImg={before:'',after:''};
+async function pickImg(e,which){const f=e.target.files[0];if(!f)return;const data=await resizeImg(f,1200,0.72);tmpImg[which]=data;document.getElementById(which==='before'?'prevBefore':'prevAfter').innerHTML=`<img src="${data}">`;}
+function openModal(){document.getElementById('jDate').value=new Date().toISOString().slice(0,10);document.getElementById('overlay').classList.remove('hidden');}
+function closeModal(){document.getElementById('overlay').classList.add('hidden');clearForm();}
+function clearForm(){['jPair','jEntry','jExit','jLot','jPnl','jStrat','jNotes','jBefore','jAfter'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});tmpImg={before:'',after:''};document.getElementById('prevBefore').innerHTML='';document.getElementById('prevAfter').innerHTML='';}
+function saveEntry(){
+  const pair=document.getElementById('jPair').value.trim();
+  if(!pair)return toast('Isi nama Pair / Instrumen dulu ⚠️');
+  const e={id:Date.now(),date:document.getElementById('jDate').value||new Date().toISOString().slice(0,10),pair:pair.toUpperCase(),dir:document.getElementById('jDir').value,result:document.getElementById('jResult').value,entry:document.getElementById('jEntry').value.trim(),exit:document.getElementById('jExit').value.trim(),lot:document.getElementById('jLot').value.trim(),pnl:parseFloat(document.getElementById('jPnl').value)||0,strat:document.getElementById('jStrat').value.trim(),notes:document.getElementById('jNotes').value.trim(),before:tmpImg.before,after:tmpImg.after};
+  const arr=getEntries();arr.push(e);
+  if(!setEntries(arr)){arr.pop();return toast('Penyimpanan penuh — coba kurangi gambar ⚠️');}
+  closeModal();chime();render();toast('Journal tersimpan ✓');
+}
+function delEntry(id){if(!confirm('Hapus journal ini?'))return;setEntries(getEntries().filter(e=>e.id!==id));render();toast('Journal dihapus');}
+function showImg(id,which){const e=getEntries().find(x=>x.id===id);if(!e||!e[which])return;document.getElementById('lightImg').src=e[which];document.getElementById('lightbox').classList.remove('hidden');}
+
+/* ---------- RENDER ---------- */
+function fmt(n){return(n>=0?'+':'')+Number(n).toLocaleString('id-ID',{maximumFractionDigits:2});}
+function plain(n){return Number(n).toLocaleString('id-ID',{maximumFractionDigits:2});}
+function render(){
+  const all=getEntries();
+  const wins=all.filter(e=>e.result==='win').length;
+  const losses=all.filter(e=>e.result==='loss').length;
+  const closed=wins+losses;
+  const wr=closed?Math.round(wins/closed*100):0;
+  const total=all.reduce((s,e)=>s+e.pnl,0);
+  const best=all.length?Math.max(...all.map(e=>e.pnl)):0;
+  const modal=getModal();
+
+  // balance
+  const saldo=modal+total;
+  document.getElementById('balNow').textContent=plain(saldo);
+  document.getElementById('balNow').className=saldo>=modal?'pos':'neg';
+  const roiEl=document.getElementById('roi');
+  if(modal>0){const roi=total/modal*100;roiEl.textContent=(roi>=0?'+':'')+roi.toFixed(1)+'%';roiEl.className=roi>=0?'pos':'neg';}
+  else{roiEl.textContent='—';roiEl.className='';}
+
+  // stats
+  const cards=[
+    {l:'Total Trade',v:all.length,c:''},
+    {l:'Setup Profit',v:wins,c:wins?'pos':''},
+    {l:'Setup Loss',v:losses,c:losses?'neg':''},
+    {l:'Win Rate',v:wr+'%',c:wr>=50?'pos':(closed?'neg':'')},
+    {l:'Total P&L',v:fmt(total),c:total>0?'pos':(total<0?'neg':'')},
+    {l:'Trade Terbaik',v:fmt(best),c:best>0?'pos':''}
+  ];
+  document.getElementById('stats').innerHTML=cards.map((c,i)=>`<div class="stat" style="animation-delay:${i*0.05}s"><div class="lbl">${c.l}</div><div class="val ${c.c}">${c.v}</div></div>`).join('');
+
+  renderChart(all,modal,saldo);
+
+  // list
+  let list=[...all];
+  const fr=document.getElementById('fResult').value;
+  if(fr!=='all')list=list.filter(e=>e.result===fr);
+  const fs=document.getElementById('fSort').value;
+  if(fs==='new')list.sort((a,b)=>b.id-a.id);else if(fs==='old')list.sort((a,b)=>a.id-b.id);else if(fs==='pnl')list.sort((a,b)=>b.pnl-a.pnl);
+
+  const el=document.getElementById('list');
+  if(!list.length){el.innerHTML=`<div class="empty"><div class="big">Belum ada journal</div><div>Mulai catat trade pertama Anda dengan tombol <span class="gold">+ Tambah Journal</span>.</div></div>`;return;}
+  el.innerHTML=list.map((e,i)=>{
+    const d=new Date(e.date).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
+    const rLbl={win:'Win',loss:'Loss',be:'BE'}[e.result];
+    let charts='';
+    if(e.before||e.after){charts='<div class="charts">'+(e.before?`<div class="ct"><span>Before</span><img src="${e.before}" onclick="showImg(${e.id},'before')"></div>`:'')+(e.after?`<div class="ct"><span>After</span><img src="${e.after}" onclick="showImg(${e.id},'after')"></div>`:'')+'</div>';}
+    return `<div class="entry" style="animation-delay:${Math.min(i*0.04,0.4)}s">
+      <div class="row1"><span class="pair">${esc(e.pair)}</span><span class="badge ${e.dir}">${e.dir==='buy'?'Buy':'Sell'}</span><span class="badge ${e.result}">${rLbl}</span><span class="date">${d}</span><span class="pnl ${e.pnl>0?'pos':(e.pnl<0?'neg':'')}">${fmt(e.pnl)}</span></div>
+      <div class="meta">${e.entry?`<div class="m"><span>Entry</span>${esc(e.entry)}</div>`:''}${e.exit?`<div class="m"><span>Exit</span>${esc(e.exit)}</div>`:''}${e.lot?`<div class="m"><span>Lot</span>${esc(e.lot)}</div>`:''}</div>
+      ${e.strat?`<span class="strat">⚡ ${esc(e.strat)}</span>`:''}
+      ${e.notes?`<div class="notes">${esc(e.notes)}</div>`:''}
+      ${charts}
+      <button class="del" onclick="delEntry(${e.id})">🗑 Hapus journal</button>
+    </div>`;
+  }).join('');
+}
+
+function renderChart(all,modal,saldo){
+  const wrap=document.getElementById('chartWrap');
+  const nowEl=document.getElementById('chNow');
+  const sorted=[...all].sort((a,b)=>a.id-b.id);
+  if(sorted.length<1){wrap.innerHTML='<div class="chart-empty">Grafik performa akan muncul setelah Anda menambah journal.</div>';nowEl.textContent='';return;}
+  let bal=modal;const pts=[modal];
+  sorted.forEach(e=>{bal+=e.pnl;pts.push(bal);});
+  const n=pts.length,W=800,H=240,padX=12,padTop=22,padBot=22;
+  let min=Math.min(...pts),max=Math.max(...pts);
+  if(min===max){min-=1;max+=1;}
+  const range=max-min;
+  const xt=i=>padX+i*(W-2*padX)/(n-1||1);
+  const yt=v=>padTop+(1-(v-min)/range)*(H-padTop-padBot);
+  let d='';pts.forEach((v,i)=>{d+=(i?'L':'M')+xt(i).toFixed(1)+' '+yt(v).toFixed(1)+' ';});
+  const area=d+`L ${xt(n-1).toFixed(1)} ${H} L ${xt(0).toFixed(1)} ${H} Z`;
+  const last=pts[n-1],up=last>=modal;
+  const stroke=up?'#5fce9b':'#e3766f';
+  const yBase=yt(modal);
+  wrap.innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="cgrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${stroke}" stop-opacity="0.28"/>
+        <stop offset="100%" stop-color="${stroke}" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <line x1="${padX}" y1="${yBase.toFixed(1)}" x2="${W-padX}" y2="${yBase.toFixed(1)}" stroke="rgba(87,200,182,0.35)" stroke-width="1" stroke-dasharray="4 5"/>
+    <path d="${area}" fill="url(#cgrad)"/>
+    <path d="${d}" fill="none" stroke="${stroke}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+    <circle cx="${xt(n-1).toFixed(1)}" cy="${yt(last).toFixed(1)}" r="4.5" fill="${stroke}"/>
+  </svg>`;
+  nowEl.innerHTML=`Saldo: <b style="color:${stroke}">${plain(last)}</b>`;
+}
+
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+/* ---------- TOAST ---------- */
+let toastT;
+function toast(msg){const t=document.getElementById('toast');t.innerHTML=msg.replace(/✓|✨/g,'<span class="gold">$&</span>');t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2600);}
+
+/* ---------- INIT ---------- */
+(function init(){
+  document.getElementById('auUser').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('auPass').focus();});
+  document.getElementById('auPass').addEventListener('keydown',e=>{if(e.key==='Enter'&&mode==='login')doAuth();});
+  const s=Store.get('sfx_session');
+  if(s&&users()[s])enter(s);
+})();
+</script>
+</body>
+</html>
