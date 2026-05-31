@@ -41,6 +41,10 @@
   .auth-card{width:100%;max-width:430px;background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:42px 38px;box-shadow:var(--shadow);backdrop-filter:blur(22px);animation:rise .8s cubic-bezier(.2,.8,.2,1)}
   @keyframes rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
   .logo-mark{width:56px;height:56px;border-radius:15px;margin:0 auto 18px;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold-bright),var(--gold-deep));color:#05231f;font-family:'Fraunces',serif;font-size:26px;font-weight:600;box-shadow:0 10px 30px -8px rgba(87,200,182,.6);letter-spacing:0}
+  .logo-box{width:84px;height:84px;margin:0 auto 18px;display:grid;place-items:center}
+  .logo-img{width:84px;height:84px;object-fit:contain;border-radius:18px;filter:drop-shadow(0 12px 28px rgba(87,200,182,.5))}
+  .logo-box.nologo .logo-img{display:none}
+  .logo-box.nologo::after{content:'SFX';width:84px;height:84px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold-bright),var(--gold-deep));color:#05231f;font-family:'Fraunces',serif;font-size:34px;font-weight:600;box-shadow:0 10px 30px -8px rgba(87,200,182,.6)}
   .auth-card h1{font-family:'Fraunces',serif;font-weight:500;font-size:30px;text-align:center;letter-spacing:1px}
   .auth-card .sub{text-align:center;color:var(--txt-dim);font-size:14px;margin-top:7px;margin-bottom:28px;font-weight:300}
   .tabs{display:flex;background:rgba(255,255,255,.04);border-radius:12px;padding:5px;margin-bottom:24px}
@@ -74,6 +78,35 @@
   .balance .bcol b.pos{color:var(--win)}.balance .bcol b.neg{color:var(--loss)}
   .balance input{width:100%;max-width:180px;background:rgba(255,255,255,.04);border:1px solid var(--line-soft);border-radius:10px;padding:9px 12px;color:var(--txt);font-size:18px;font-family:'Fraunces',serif}
   .balance input:focus{outline:none;border-color:var(--gold)}
+  .modal-row{display:flex;gap:8px;align-items:center}
+  .modal-row input{flex:1;max-width:130px}
+  .modal-row select{background:rgba(255,255,255,.04);border:1px solid var(--line-soft);border-radius:10px;padding:9px 10px;color:var(--txt);font-size:13px}
+  .modal-row select:focus{outline:none;border-color:var(--gold)}
+  .req{font-style:normal;font-size:10px;color:var(--loss);text-transform:uppercase;letter-spacing:.5px;font-family:'Outfit',sans-serif;font-weight:600;margin-left:4px}
+  .hint{display:block;margin-top:6px;font-size:11.5px;color:var(--txt-faint);font-weight:300;text-transform:none;letter-spacing:0}
+  .opt{font-style:normal;font-size:11px;color:var(--txt-faint);text-transform:none;letter-spacing:0;margin-left:4px}
+  .strat-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .chip{font-size:12.5px;color:var(--txt-dim);background:rgba(87,200,182,.06);border:1px solid var(--line);border-radius:20px;padding:6px 14px;transition:all .2s}
+  .chip:hover{border-color:var(--gold);color:var(--txt);background:rgba(87,200,182,.13)}
+  .chip:active{transform:scale(.95)}
+  .chip.add{border-style:dashed;color:var(--gold)}
+  .newstrat{display:flex;gap:8px;margin-top:10px}
+  .newstrat input{flex:1;background:rgba(255,255,255,.03);border:1px solid var(--line-soft);border-radius:10px;padding:10px 13px;color:var(--txt);font-size:14px}
+  .newstrat input:focus{outline:none;border-color:var(--gold)}
+  .pop{max-width:430px}
+  .pop-sub{color:var(--txt-dim);font-size:14px;font-weight:300;margin:-8px 0 18px;line-height:1.5}
+  .cur-toggle{display:flex;gap:8px;margin-bottom:18px}
+  .cur-toggle button{flex:1;padding:11px;border-radius:11px;font-size:14px;font-weight:500;color:var(--txt-dim);background:rgba(255,255,255,.04);border:1px solid var(--line-soft);transition:all .2s}
+  .cur-toggle button.on{background:linear-gradient(135deg,var(--gold-bright),var(--gold));color:#05231f;border-color:transparent;box-shadow:0 6px 16px -6px rgba(87,200,182,.5)}
+  .amt-wrap{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.03);border:1px solid var(--line-soft);border-radius:11px;padding:4px 14px;transition:all .2s}
+  .amt-wrap:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px rgba(87,200,182,.12)}
+  .amt-wrap span{font-family:'Fraunces',serif;font-size:20px;color:var(--gold)}
+  .amt-wrap input{flex:1;background:transparent;border:none;color:var(--txt);font-size:18px;padding:11px 0}
+  .amt-wrap input:focus{outline:none}
+  .motiv{max-width:400px;text-align:center}
+  .motiv-ic{font-size:46px;margin-bottom:8px}
+  .motiv h3{text-align:center}
+  .motiv-text{color:var(--txt);font-size:16px;line-height:1.7;font-weight:300;margin:14px 4px 22px;font-family:'Fraunces',serif;font-style:italic}
 
   /* stats */
   .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px}
@@ -121,8 +154,14 @@
   .entry .charts .ct span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--txt-faint);margin-bottom:6px}
   .entry .charts .ct img{width:100%;border-radius:10px;border:1px solid var(--line-soft);cursor:zoom-in;transition:border-color .2s}
   .entry .charts .ct img:hover{border-color:var(--gold)}
-  .entry .del{margin-top:14px;font-size:12.5px;color:var(--txt-faint);transition:color .2s}
-  .entry .del:hover{color:var(--loss)}
+  .entry-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line-soft);align-items:center}
+  .act{font-size:12.5px;font-weight:500;color:var(--txt-dim);background:rgba(255,255,255,.04);border:1px solid var(--line-soft);border-radius:9px;padding:7px 13px;transition:all .2s}
+  .act:hover{border-color:var(--gold);color:var(--txt);background:rgba(87,200,182,.08)}
+  .act:active{transform:scale(.96)}
+  .act.del{margin-left:auto}
+  .act.del:hover{border-color:var(--loss);color:var(--loss);background:rgba(227,118,111,.08)}
+  .act.locked{color:var(--txt-faint);background:transparent;border:1px dashed var(--line-soft);cursor:default}
+  .once{font-family:'Outfit',sans-serif;font-size:13px;font-weight:400;color:var(--loss);letter-spacing:0}
   .empty{text-align:center;padding:70px 20px;color:var(--txt-faint)}
   .empty .big{font-family:'Fraunces',serif;font-size:24px;color:var(--txt-dim);margin-bottom:8px}
 
@@ -158,7 +197,9 @@
   <!-- ============ AUTH ============ -->
   <section id="auth">
     <div class="auth-card">
-      <div class="logo-mark brand">SFX</div>
+      <div id="logoBox" class="logo-box">
+        <img class="logo-img" src="logo.png" alt="SFX SPACE" onerror="document.getElementById('logoBox').classList.add('nologo')">
+      </div>
       <h1 class="brand">SFX <span class="gold">SPACE</span></h1>
       <p class="sub">Journal trading pribadi — tersimpan & terlindungi</p>
 
@@ -169,11 +210,11 @@
 
       <div class="field hidden" id="nameField">
         <label>Nama Anda</label>
-        <input id="auName" type="text" placeholder="contoh: Budi Santoso" />
+        <input id="auName" type="text" placeholder="contoh: Samudra Pro" />
       </div>
       <div class="field">
-        <label>Username</label>
-        <input id="auUser" type="text" autocomplete="username" placeholder="username Anda" />
+        <label>Username atau Email</label>
+        <input id="auUser" type="text" autocomplete="username" placeholder="username atau email Anda" />
       </div>
       <div class="field">
         <label>Password</label>
@@ -205,9 +246,16 @@
 
     <!-- modal / saldo -->
     <div class="balance">
-      <div class="bcol"><span>Modal Awal (opsional)</span><input id="modalInput" type="number" step="any" placeholder="0" onchange="saveModal(this.value)" /></div>
+      <div class="bcol">
+        <span>Modal Awal <em class="req">*wajib</em></span>
+        <div class="modal-row">
+          <input id="modalInput" type="number" step="any" placeholder="0" onchange="saveModal(this.value)" />
+          <select id="curSelect" onchange="saveCur(this.value)"><option value="usd">USD ($)</option><option value="idr">IDR (Rp)</option></select>
+        </div>
+      </div>
       <div class="bcol"><span>Saldo Sekarang</span><b id="balNow">0</b></div>
       <div class="bcol"><span>Return (ROI)</span><b id="roi">—</b></div>
+      <div class="bcol hidden" id="roiLossCol"><span>ROI Loss</span><b id="roiLoss" class="neg">—</b></div>
     </div>
 
     <div class="stats" id="stats"></div>
@@ -245,7 +293,7 @@
   <!-- ============ MODAL FORM ============ -->
   <div class="overlay hidden" id="overlay">
     <div class="modal">
-      <h3>Tambah <span class="gold">Journal Trade</span></h3>
+      <h3 id="modalTitle">Tambah <span class="gold">Journal Trade</span></h3>
       <div class="grid2">
         <div class="field"><label>Tanggal</label><input id="jDate" type="date" /></div>
         <div class="field"><label>Pair / Instrumen</label><input id="jPair" type="text" placeholder="contoh: XAU/USD" /></div>
@@ -254,9 +302,16 @@
         <div class="field"><label>Harga Entry</label><input id="jEntry" type="text" placeholder="0.00" /></div>
         <div class="field"><label>Harga Exit</label><input id="jExit" type="text" placeholder="0.00" /></div>
         <div class="field"><label>Lot / Size</label><input id="jLot" type="text" placeholder="0.10" /></div>
-        <div class="field"><label>Profit / Loss (P&L)</label><input id="jPnl" type="number" step="any" placeholder="contoh: 120 atau -45" /></div>
+        <div class="field"><label>Nominal P&L <em class="opt">(opsional)</em></label><input id="jPnl" type="number" step="any" min="0" placeholder="kosongkan untuk hitung otomatis" /><small class="hint">Untuk <b>Win</b>: boleh dikosongkan → dihitung otomatis dari Entry, Exit & Lot. Untuk <b>Loss/BE</b>: Anda akan diminta memasukkan nominalnya.</small></div>
       </div>
-      <div class="field"><label>Strategi / Setup</label><input id="jStrat" type="text" placeholder="contoh: Breakout, Supply Demand, Scalping" /></div>
+      <div class="field"><label>Strategi / Setup</label>
+        <input id="jStrat" type="text" placeholder="ketik sendiri atau pilih metode di bawah" />
+        <div class="strat-chips" id="stratChips"></div>
+        <div class="newstrat hidden" id="newStratWrap">
+          <input id="newStrat" type="text" placeholder="nama metode baru (mis. Alchemist)" onkeydown="if(event.key==='Enter')addStrat()" />
+          <button class="act" onclick="addStrat()">Simpan</button>
+        </div>
+      </div>
       <div class="field"><label>Catatan & Refleksi</label><textarea id="jNotes" placeholder="Apa yang berjalan baik? Apa yang bisa diperbaiki?"></textarea></div>
       <div class="grid2">
         <div class="field">
@@ -278,6 +333,36 @@
   </div>
 
   <div id="lightbox" class="hidden" onclick="this.classList.add('hidden')"><img id="lightImg" src="" /></div>
+
+  <!-- POPUP: nominal kerugian untuk Loss / BE -->
+  <div class="overlay hidden" id="lossPopup">
+    <div class="modal pop">
+      <h3 id="lossTitle">Nominal <span class="gold">Kerugian</span></h3>
+      <p class="pop-sub" id="lossSub">Masukkan berapa kerugian Anda pada trade ini.</p>
+      <div class="cur-toggle">
+        <button type="button" id="curUsd" onclick="setLossCur('usd')">USD ($)</button>
+        <button type="button" id="curIdr" onclick="setLossCur('idr')">IDR (Rp)</button>
+      </div>
+      <div class="field"><label id="lossLabel">Jumlah Kerugian</label>
+        <div class="amt-wrap"><span id="lossSym">$</span><input id="lossAmt" type="number" step="any" min="0" placeholder="contoh: 45" onkeydown="if(event.key==='Enter')confirmLoss()" /></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" onclick="confirmLoss()">💾 Simpan</button>
+        <button class="btn-ghost" onclick="closeLossPopup()">Batal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP: pesan motivasi setelah Loss -->
+  <div class="overlay hidden" id="motivPopup" onclick="if(event.target===this)this.classList.add('hidden')">
+    <div class="modal pop motiv">
+      <div class="motiv-ic">📈</div>
+      <h3>Tetap <span class="gold">Semangat!</span></h3>
+      <p class="motiv-text" id="motivText"></p>
+      <div class="modal-actions"><button class="btn" onclick="document.getElementById('motivPopup').classList.add('hidden')">Lanjutkan</button></div>
+    </div>
+  </div>
+
   <div id="toast"></div>
 
 <script>
@@ -317,8 +402,8 @@ function showMsg(t,ok){const m=document.getElementById('authMsg');m.textContent=
 async function doAuth(){
   const u=document.getElementById('auUser').value.trim().toLowerCase();
   const p=document.getElementById('auPass').value;
-  if(!u||!p)return showMsg('Username dan password wajib diisi.');
-  if(u.length<3)return showMsg('Username minimal 3 karakter.');
+  if(!u||!p)return showMsg('Username/email dan password wajib diisi.');
+  if(u.length<3)return showMsg('Username/email minimal 3 karakter.');
   const db=users();
   if(mode==='reg'){
     const name=document.getElementById('auName').value.trim();
@@ -326,11 +411,11 @@ async function doAuth(){
     if(!name)return showMsg('Nama wajib diisi.');
     if(p.length<4)return showMsg('Password minimal 4 karakter.');
     if(p!==p2)return showMsg('Konfirmasi password tidak cocok.');
-    if(db[u])return showMsg('Username sudah terdaftar. Silakan masuk.');
+    if(db[u])return showMsg('Username/email sudah terdaftar. Silakan masuk.');
     db[u]={pass:await hash(p),name:name,created:Date.now()};saveUsers(db);
     showMsg('Akun berhasil dibuat! Mengarahkan...',true);chime();setTimeout(()=>enter(u),700);
   }else{
-    if(!db[u])return showMsg('Username tidak ditemukan.');
+    if(!db[u])return showMsg('Username/email tidak ditemukan.');
     if(db[u].pass!==await hash(p))return showMsg('Password salah.');
     chime();enter(u);
   }
@@ -345,13 +430,18 @@ function enter(u){
   document.getElementById('whoami').textContent='@'+u;
   document.getElementById('dateNow').textContent=new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   document.getElementById('modalInput').value=getModal()||'';
+  document.getElementById('curSelect').value=getCur();
   render();
 }
 function logout(){Store.remove('sfx_session');currentUser=null;document.getElementById('app').classList.add('hidden');document.getElementById('auth').classList.remove('hidden');document.getElementById('auUser').value='';document.getElementById('auPass').value='';}
 
 /* ---------- MODAL / SALDO ---------- */
 function getModal(){return parseFloat(Store.get('sfx_modal_'+currentUser))||0;}
-function saveModal(v){Store.set('sfx_modal_'+currentUser,String(parseFloat(v)||0));render();toast('Modal disimpan ✓');}
+function saveModal(v){Store.set('sfx_modal_'+currentUser,String(parseFloat(v)||0));document.getElementById('modalInput').style.borderColor='';render();toast('Modal disimpan ✓');}
+function getCur(){return Store.get('sfx_cur_'+currentUser)||'usd';}
+function saveCur(v){Store.set('sfx_cur_'+currentUser,v);render();toast('Mata uang disimpan ✓');}
+function curSym(){return getCur()==='idr'?'Rp':'$';}
+function fmtMoney(n,signed){const neg=n<0;const a=Math.abs(Number(n));const opt=getCur()==='idr'?{maximumFractionDigits:0}:{maximumFractionDigits:2};const str=a.toLocaleString('id-ID',opt);return (neg?'-':(signed?'+':''))+curSym()+str;}
 
 /* ---------- JOURNAL DATA ---------- */
 function key(){return 'sfx_journal_'+currentUser;}
@@ -360,16 +450,136 @@ function setEntries(a){return Store.set(key(),JSON.stringify(a));}
 
 let tmpImg={before:'',after:''};
 async function pickImg(e,which){const f=e.target.files[0];if(!f)return;const data=await resizeImg(f,1200,0.72);tmpImg[which]=data;document.getElementById(which==='before'?'prevBefore':'prevAfter').innerHTML=`<img src="${data}">`;}
-function openModal(){document.getElementById('jDate').value=new Date().toISOString().slice(0,10);document.getElementById('overlay').classList.remove('hidden');}
-function closeModal(){document.getElementById('overlay').classList.add('hidden');clearForm();}
+function openModal(){if(getModal()<=0){toast('Isi Modal Awal dulu ⚠️');const mi=document.getElementById('modalInput');mi.style.borderColor='var(--loss)';mi.focus();return;}editingId=null;clearForm();document.getElementById('modalTitle').innerHTML='Tambah <span class="gold">Journal Trade</span>';document.getElementById('jDate').value=new Date().toISOString().slice(0,10);renderStrats();document.getElementById('overlay').classList.remove('hidden');}
+function closeModal(){editingId=null;document.getElementById('overlay').classList.add('hidden');clearForm();document.getElementById('newStratWrap').classList.add('hidden');}
 function clearForm(){['jPair','jEntry','jExit','jLot','jPnl','jStrat','jNotes','jBefore','jAfter'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});tmpImg={before:'',after:''};document.getElementById('prevBefore').innerHTML='';document.getElementById('prevAfter').innerHTML='';}
+/* metode strategi tersimpan per member */
+function getStrats(){try{const s=Store.get('sfx_strats_'+currentUser);if(s)return JSON.parse(s);}catch(e){}return['ICT','SMC','Supply Demand','Breakout','Scalping'];}
+function saveStrats(a){Store.set('sfx_strats_'+currentUser,JSON.stringify(a));}
+function renderStrats(){
+  const box=document.getElementById('stratChips');
+  const chips=getStrats().map(s=>`<button type="button" class="chip" onclick="pickStrat(this)">${esc(s)}</button>`).join('');
+  box.innerHTML=chips+`<button type="button" class="chip add" onclick="toggleNewStrat()">➕ Metode baru</button>`;
+}
+function pickStrat(btn){document.getElementById('jStrat').value=btn.textContent;}
+function toggleNewStrat(){const w=document.getElementById('newStratWrap');w.classList.toggle('hidden');if(!w.classList.contains('hidden'))document.getElementById('newStrat').focus();}
+function addStrat(){
+  const v=document.getElementById('newStrat').value.trim();
+  if(!v)return;
+  const arr=getStrats();
+  if(!arr.some(s=>s.toLowerCase()===v.toLowerCase()))arr.push(v);
+  saveStrats(arr);
+  document.getElementById('jStrat').value=v;
+  document.getElementById('newStrat').value='';
+  document.getElementById('newStratWrap').classList.add('hidden');
+  renderStrats();toast('Metode ditambahkan ✓');
+}
+let editingId=null, pendingResult='win';
+function computeAmount(){
+  const entered=parseFloat(document.getElementById('jPnl').value);
+  if(!isNaN(entered)&&entered!==0)return Math.abs(entered);
+  const en=parseFloat(document.getElementById('jEntry').value);
+  const ex=parseFloat(document.getElementById('jExit').value);
+  const lot=parseFloat(document.getElementById('jLot').value);
+  if(!isNaN(en)&&!isNaN(ex)&&!isNaN(lot)&&lot>0)return Math.abs((ex-en)*lot);
+  return null;
+}
 function saveEntry(){
   const pair=document.getElementById('jPair').value.trim();
   if(!pair)return toast('Isi nama Pair / Instrumen dulu ⚠️');
-  const e={id:Date.now(),date:document.getElementById('jDate').value||new Date().toISOString().slice(0,10),pair:pair.toUpperCase(),dir:document.getElementById('jDir').value,result:document.getElementById('jResult').value,entry:document.getElementById('jEntry').value.trim(),exit:document.getElementById('jExit').value.trim(),lot:document.getElementById('jLot').value.trim(),pnl:parseFloat(document.getElementById('jPnl').value)||0,strat:document.getElementById('jStrat').value.trim(),notes:document.getElementById('jNotes').value.trim(),before:tmpImg.before,after:tmpImg.after};
-  const arr=getEntries();arr.push(e);
-  if(!setEntries(arr)){arr.pop();return toast('Penyimpanan penuh — coba kurangi gambar ⚠️');}
-  closeModal();chime();render();toast('Journal tersimpan ✓');
+  pendingResult=document.getElementById('jResult').value;
+  if(pendingResult==='win'){
+    let a=computeAmount(); if(a===null)a=0;
+    finalizeSave(a);
+  }else{
+    openLossPopup(pendingResult);
+  }
+}
+function finalizeSave(signedPnl){
+  const pair=document.getElementById('jPair').value.trim();
+  const data={date:document.getElementById('jDate').value||new Date().toISOString().slice(0,10),pair:pair.toUpperCase(),dir:document.getElementById('jDir').value,result:pendingResult,entry:document.getElementById('jEntry').value.trim(),exit:document.getElementById('jExit').value.trim(),lot:document.getElementById('jLot').value.trim(),pnl:signedPnl,strat:document.getElementById('jStrat').value.trim(),notes:document.getElementById('jNotes').value.trim(),before:tmpImg.before,after:tmpImg.after};
+  const arr=getEntries();
+  if(editingId){
+    const idx=arr.findIndex(x=>x.id===editingId);
+    if(idx<0){editingId=null;return;}
+    const backup=arr[idx];
+    arr[idx]={...backup,...data,edited:true};
+    if(!setEntries(arr)){arr[idx]=backup;return toast('Penyimpanan penuh — coba kurangi gambar ⚠️');}
+    editingId=null;closeModal();chime();render();
+    if(pendingResult==='loss')showMotivation();else toast('Journal diperbarui ✓');
+  }else{
+    const e={id:Date.now(),...data,edited:false};
+    arr.push(e);
+    if(!setEntries(arr)){arr.pop();return toast('Penyimpanan penuh — coba kurangi gambar ⚠️');}
+    closeModal();chime();render();
+    if(pendingResult==='loss')showMotivation();else toast('Journal tersimpan ✓');
+  }
+}
+/* popup nominal kerugian (Loss / BE) */
+function openLossPopup(result){
+  document.getElementById('lossTitle').innerHTML = result==='be'?'Nominal <span class="gold">Break Even</span>':'Nominal <span class="gold">Kerugian</span>';
+  document.getElementById('lossSub').textContent = result==='be'?'Masukkan biaya/komisi jika ada (kosongkan jika benar-benar nol).':'Masukkan berapa kerugian Anda pada trade ini.';
+  document.getElementById('lossLabel').textContent = result==='be'?'Biaya / Komisi':'Jumlah Kerugian';
+  const suggest=computeAmount();
+  document.getElementById('lossAmt').value = (suggest!==null&&result!=='be')?suggest:'';
+  setLossCur(getCur());
+  document.getElementById('lossPopup').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('lossAmt').focus(),100);
+}
+function setLossCur(c){
+  saveCur(c);
+  document.getElementById('curUsd').classList.toggle('on',c==='usd');
+  document.getElementById('curIdr').classList.toggle('on',c==='idr');
+  document.getElementById('lossSym').textContent=curSym();
+}
+function closeLossPopup(){document.getElementById('lossPopup').classList.add('hidden');}
+function confirmLoss(){
+  const amt=Math.abs(parseFloat(document.getElementById('lossAmt').value)||0);
+  closeLossPopup();
+  finalizeSave(-amt);
+}
+/* pesan motivasi acak setelah Loss */
+const MOTIV=[
+  "Loss hari ini adalah biaya sekolah seorang trader. Tetap disiplin pada rencanamu.",
+  "Trader hebat bukan yang tak pernah loss, tapi yang konsisten bangkit dan belajar.",
+  "Satu loss tidak mendefinisikan akunmu. Manajemen risiko menjaga langkahmu tetap panjang.",
+  "Catat, evaluasi, perbaiki. Setiap kekalahan menyimpan satu pelajaran berharga.",
+  "Pasar akan selalu ada besok. Jaga modal, jaga mental, lanjutkan perjalanan.",
+  "Kerugian kecil yang terkendali jauh lebih baik daripada ego yang dipaksakan.",
+  "Fokus pada proses, bukan satu hasil. Konsistensi mengalahkan keberuntungan.",
+  "Tarik napas. Trader profesional diukur dari ribuan trade, bukan satu trade ini."
+];
+function showMotivation(){
+  document.getElementById('motivText').textContent=MOTIV[Math.floor(Math.random()*MOTIV.length)];
+  document.getElementById('motivPopup').classList.remove('hidden');
+}
+function editEntry(id){
+  const e=getEntries().find(x=>x.id===id);
+  if(!e)return;
+  if(e.edited)return toast('Journal ini sudah pernah diedit ⚠️');
+  editingId=id;
+  document.getElementById('modalTitle').innerHTML='Edit <span class="gold">Journal Trade</span> <span class="once">(sekali saja)</span>';
+  document.getElementById('jDate').value=e.date;
+  document.getElementById('jPair').value=e.pair;
+  document.getElementById('jDir').value=e.dir;
+  document.getElementById('jResult').value=e.result;
+  document.getElementById('jEntry').value=e.entry||'';
+  document.getElementById('jExit').value=e.exit||'';
+  document.getElementById('jLot').value=e.lot||'';
+  document.getElementById('jPnl').value=Math.abs(e.pnl||0);
+  document.getElementById('jStrat').value=e.strat||'';
+  document.getElementById('jNotes').value=e.notes||'';
+  tmpImg={before:e.before||'',after:e.after||''};
+  document.getElementById('prevBefore').innerHTML=e.before?`<img src="${e.before}">`:'';
+  document.getElementById('prevAfter').innerHTML=e.after?`<img src="${e.after}">`:'';
+  renderStrats();
+  document.getElementById('overlay').classList.remove('hidden');
+}
+function toggleChart(id){
+  const el=document.getElementById('charts-'+id),btn=document.getElementById('cbtn-'+id);
+  if(!el)return;
+  const hidden=el.classList.toggle('hidden');
+  if(btn)btn.textContent=hidden?'📈 Lihat Chart':'📈 Sembunyikan Chart';
 }
 function delEntry(id){if(!confirm('Hapus journal ini?'))return;setEntries(getEntries().filter(e=>e.id!==id));render();toast('Journal dihapus');}
 function showImg(id,which){const e=getEntries().find(x=>x.id===id);if(!e||!e[which])return;document.getElementById('lightImg').src=e[which];document.getElementById('lightbox').classList.remove('hidden');}
@@ -389,11 +599,16 @@ function render(){
 
   // balance
   const saldo=modal+total;
-  document.getElementById('balNow').textContent=plain(saldo);
+  document.getElementById('balNow').textContent=fmtMoney(saldo);
   document.getElementById('balNow').className=saldo>=modal?'pos':'neg';
   const roiEl=document.getElementById('roi');
   if(modal>0){const roi=total/modal*100;roiEl.textContent=(roi>=0?'+':'')+roi.toFixed(1)+'%';roiEl.className=roi>=0?'pos':'neg';}
   else{roiEl.textContent='—';roiEl.className='';}
+  // ROI loss (hanya bila ada setup loss)
+  const lossSum=all.filter(e=>e.result==='loss').reduce((s,e)=>s+e.pnl,0);
+  const roiLossCol=document.getElementById('roiLossCol');
+  if(losses>0&&modal>0){document.getElementById('roiLoss').textContent=(lossSum/modal*100).toFixed(1)+'%';roiLossCol.classList.remove('hidden');}
+  else{roiLossCol.classList.add('hidden');}
 
   // stats
   const cards=[
@@ -401,8 +616,8 @@ function render(){
     {l:'Setup Profit',v:wins,c:wins?'pos':''},
     {l:'Setup Loss',v:losses,c:losses?'neg':''},
     {l:'Win Rate',v:wr+'%',c:wr>=50?'pos':(closed?'neg':'')},
-    {l:'Total P&L',v:fmt(total),c:total>0?'pos':(total<0?'neg':'')},
-    {l:'Trade Terbaik',v:fmt(best),c:best>0?'pos':''}
+    {l:'Total P&L',v:fmtMoney(total,true),c:total>0?'pos':(total<0?'neg':'')},
+    {l:'Trade Terbaik',v:fmtMoney(best,true),c:best>0?'pos':''}
   ];
   document.getElementById('stats').innerHTML=cards.map((c,i)=>`<div class="stat" style="animation-delay:${i*0.05}s"><div class="lbl">${c.l}</div><div class="val ${c.c}">${c.v}</div></div>`).join('');
 
@@ -420,15 +635,20 @@ function render(){
   el.innerHTML=list.map((e,i)=>{
     const d=new Date(e.date).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
     const rLbl={win:'Win',loss:'Loss',be:'BE'}[e.result];
-    let charts='';
-    if(e.before||e.after){charts='<div class="charts">'+(e.before?`<div class="ct"><span>Before</span><img src="${e.before}" onclick="showImg(${e.id},'before')"></div>`:'')+(e.after?`<div class="ct"><span>After</span><img src="${e.after}" onclick="showImg(${e.id},'after')"></div>`:'')+'</div>';}
+    let charts='';const hasCharts=!!(e.before||e.after);
+    if(hasCharts){charts=`<div class="charts hidden" id="charts-${e.id}">`+(e.before?`<div class="ct"><span>Before</span><img src="${e.before}" onclick="showImg(${e.id},'before')"></div>`:'')+(e.after?`<div class="ct"><span>After</span><img src="${e.after}" onclick="showImg(${e.id},'after')"></div>`:'')+'</div>';}
+    const editAct=e.edited?`<span class="act locked">🔒 Sudah diedit</span>`:`<button class="act" onclick="editEntry(${e.id})">✏️ Edit</button>`;
     return `<div class="entry" style="animation-delay:${Math.min(i*0.04,0.4)}s">
-      <div class="row1"><span class="pair">${esc(e.pair)}</span><span class="badge ${e.dir}">${e.dir==='buy'?'Buy':'Sell'}</span><span class="badge ${e.result}">${rLbl}</span><span class="date">${d}</span><span class="pnl ${e.pnl>0?'pos':(e.pnl<0?'neg':'')}">${fmt(e.pnl)}</span></div>
+      <div class="row1"><span class="pair">${esc(e.pair)}</span><span class="badge ${e.dir}">${e.dir==='buy'?'Buy':'Sell'}</span><span class="badge ${e.result}">${rLbl}</span><span class="date">${d}</span><span class="pnl ${e.pnl>0?'pos':(e.pnl<0?'neg':'')}">${fmtMoney(e.pnl,true)}</span></div>
       <div class="meta">${e.entry?`<div class="m"><span>Entry</span>${esc(e.entry)}</div>`:''}${e.exit?`<div class="m"><span>Exit</span>${esc(e.exit)}</div>`:''}${e.lot?`<div class="m"><span>Lot</span>${esc(e.lot)}</div>`:''}</div>
       ${e.strat?`<span class="strat">⚡ ${esc(e.strat)}</span>`:''}
       ${e.notes?`<div class="notes">${esc(e.notes)}</div>`:''}
+      <div class="entry-actions">
+        ${hasCharts?`<button class="act" id="cbtn-${e.id}" onclick="toggleChart(${e.id})">📈 Lihat Chart</button>`:''}
+        ${editAct}
+        <button class="act del" onclick="delEntry(${e.id})">🗑 Hapus</button>
+      </div>
       ${charts}
-      <button class="del" onclick="delEntry(${e.id})">🗑 Hapus journal</button>
     </div>`;
   }).join('');
 }
@@ -463,7 +683,7 @@ function renderChart(all,modal,saldo){
     <path d="${d}" fill="none" stroke="${stroke}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
     <circle cx="${xt(n-1).toFixed(1)}" cy="${yt(last).toFixed(1)}" r="4.5" fill="${stroke}"/>
   </svg>`;
-  nowEl.innerHTML=`Saldo: <b style="color:${stroke}">${plain(last)}</b>`;
+  nowEl.innerHTML=`Saldo: <b style="color:${stroke}">${fmtMoney(last)}</b>`;
 }
 
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
